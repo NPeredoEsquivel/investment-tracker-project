@@ -1,9 +1,15 @@
+import React, { useState } from "react";
 import Card from "./UI/Card/Card";
 import Header from "./components/Header/Header";
 import InvestmentForm from "./components/Body/InvestmentForm/InvestmentForm";
 import InvestmentTable from "./components/Body/InvestmentTable/InvestmentTable";
+import classes from "./App.module.scss";
+
+const INVESTMENTS = [];
 
 function App() {
+  const [investments, setInvestmets] = useState(INVESTMENTS);
+
   const calculateHandler = (userInput) => {
     // Should be triggered when form is submitted
     // You might not directly want to bind it to the submit event on the form though...
@@ -30,16 +36,20 @@ function App() {
 
     // do something with yearlyData ...
   };
+  const toggleInvestments =
+    investments.length > 0 ? (
+      <InvestmentTable investments={investments} />
+    ) : (
+      <div className={classes["no-results"]}>No investments</div>
+    );
 
   return (
     <Card>
       <Header />
-
       <InvestmentForm />
-
       {/* Todo: Show below table conditionally (only once result data is available) */}
       {/* Show fallback text if no data is available */}
-      <InvestmentTable />
+      {toggleInvestments}
     </Card>
   );
 }

@@ -1,4 +1,5 @@
 import React from "react";
+import classes from "./InvestmentTable.module.scss";
 
 const TABLE_HEADERS = [
   { name: "Year" },
@@ -12,7 +13,7 @@ export default function InvestmentTable() {
     return <th>{singleHeader.name}</th>;
   });
   return (
-    <table className="result">
+    <table className={classes["result"]}>
       <thead>
         <tr>{headers}</tr>
       </thead>
