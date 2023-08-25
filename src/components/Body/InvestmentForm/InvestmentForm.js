@@ -5,21 +5,29 @@ import Input from "../../../UI/Input/Input";
 import InputGroup from "./InputGroup/InputGroup";
 import Button from "../../../UI/Button/Button";
 import Card from "../../../UI/Card/Card";
+import { INVESTMENT_DICTIONARY } from "../../../utils/utils.js";
+
+const {
+  currentSaving,
+  yearlyContribution,
+  expectedInterest,
+  investmentDuration,
+} = INVESTMENT_DICTIONARY;
 
 const defaultState = {
-  currentSaving: "",
-  yearlyContribution: "",
-  expectedInerest: "",
-  investmentDuration: "",
+  [currentSaving]: "",
+  [yearlyContribution]: "",
+  [expectedInterest]: "",
+  [investmentDuration]: "",
 };
 
-export default function InvestmentForm() {
+export default function InvestmentForm({ onCalculate }) {
   const [investmentValues, setInvestmentValues] = useState(defaultState);
 
   const onInvestmentValueChange = (event) => {
     const { name, value } = event.target;
     setInvestmentValues((prevState) => {
-      return { ...prevState, [name]: value };
+      return { ...prevState, [name]: +value };
     });
   };
 
@@ -28,7 +36,9 @@ export default function InvestmentForm() {
   };
 
   const addInvestmentHandler = (event) => {
-    event.prevent.default();
+    event.preventDefault();
+
+    onCalculate(investmentValues);
   };
 
   return (
@@ -39,8 +49,8 @@ export default function InvestmentForm() {
           <Input
             type="number"
             id="current-savings"
-            name="currentSaving"
-            value={investmentValues.currentSaving}
+            name="current-savings"
+            value={investmentValues[currentSaving]}
             onChangeHandler={onInvestmentValueChange}
           />
         </InputGroup>
@@ -49,8 +59,8 @@ export default function InvestmentForm() {
           <Input
             type="number"
             id="yearly-contribution"
-            name="yearlyContribution"
-            value={investmentValues.yearlyContribution}
+            name="yearly-contribution"
+            value={investmentValues[yearlyContribution]}
             onChangeHandler={onInvestmentValueChange}
           />
         </InputGroup>
@@ -63,8 +73,8 @@ export default function InvestmentForm() {
           <Input
             type="number"
             id="expected-return"
-            name="expectedInerest"
-            value={investmentValues.expectedInerest}
+            name="expected-return"
+            value={investmentValues[expectedInterest]}
             onChangeHandler={onInvestmentValueChange}
           />
         </InputGroup>
@@ -73,8 +83,8 @@ export default function InvestmentForm() {
           <Input
             type="number"
             id="duration"
-            name="investmentDuration"
-            value={investmentValues.investmentDuration}
+            name="duration"
+            value={investmentValues[investmentDuration]}
             onChangeHandler={onInvestmentValueChange}
           />
         </InputGroup>

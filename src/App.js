@@ -4,41 +4,50 @@ import Header from "./components/Header/Header";
 import InvestmentForm from "./components/Body/InvestmentForm/InvestmentForm";
 import InvestmentTable from "./components/Body/InvestmentTable/InvestmentTable";
 import classes from "./App.module.scss";
-
-const INVESTMENTS = [];
+import { INVESTMENT_DICTIONARY } from "./utils/utils.js";
 
 function App() {
-  const [investments, setInvestmets] = useState(INVESTMENTS);
+  const {
+    currentSaving,
+    yearlyContribution,
+    expectedInterest,
+    investmentDuration,
+  } = INVESTMENT_DICTIONARY;
+
+  const [userInput, setUserInput] = useState([]);
 
   const calculateHandler = (userInput) => {
-    // Should be triggered when form is submitted
-    // You might not directly want to bind it to the submit event on the form though...
+    setUserInput(userInput);
+  };
 
-    const yearlyData = []; // per-year results
+  const yearlyData = [];
 
-    let currentSavings = +userInput["current-savings"]; // feel free to change the shape of this input object!
-    const yearlyContribution = +userInput["yearly-contribution"]; // as mentioned: feel free to change the shape...
-    const expectedReturn = +userInput["expected-return"] / 100;
-    const duration = +userInput["duration"];
+  if (userInput) {
+    let currentSavings = +userInput[currentSaving];
+    window.userInput = userInput;
+    console.log(currentSaving);
+    const yearlyContributionCalc = +userInput[yearlyContribution];
+    const expectedReturn = +userInput[expectedInterest] / 100;
+    const duration = +userInput[investmentDuration];
 
-    // The below code calculates yearly results (total savings, interest etc)
     for (let i = 0; i < duration; i++) {
       const yearlyInterest = currentSavings * expectedReturn;
-      currentSavings += yearlyInterest + yearlyContribution;
+      currentSavings += yearlyInterest + yearlyContributionCalc;
       yearlyData.push({
-        // feel free to change the shape of the data pushed to the array!
         year: i + 1,
         yearlyInterest: yearlyInterest,
         savingsEndOfYear: currentSavings,
-        yearlyContribution: yearlyContribution,
+        yearlyContribution: yearlyContributionCalc,
       });
     }
+  }
 
-    // do something with yearlyData ...
-  };
   const toggleInvestments =
-    investments.length > 0 ? (
-      <InvestmentTable investments={investments} />
+    yearlyData.length > 0 ? (
+      <InvestmentTable
+        investmentsCalculation={yearlyData}
+        initialInvestment={userInput[currentSaving]}
+      />
     ) : (
       <div className={classes["no-results"]}>No investments</div>
     );
@@ -46,9 +55,7 @@ function App() {
   return (
     <Card>
       <Header />
-      <InvestmentForm />
-      {/* Todo: Show below table conditionally (only once result data is available) */}
-      {/* Show fallback text if no data is available */}
+      <InvestmentForm onCalculate={calculateHandler} />
       {toggleInvestments}
     </Card>
   );
